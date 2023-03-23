@@ -1,11 +1,26 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AppRouter from "components/Router";
+import { authService } from "fbase";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [init, setInit] = useState(false);
+
+  useEffect(() => {
+    authService.onAuthStateChanged((user) => {
+      if(user) {
+        setIsLoggedIn(true);
+      }
+      else {
+        setIsLoggedIn(false);
+      }
+      setInit(true);
+    });
+  }, []);
+
   return (
     <>
-      <AppRouter isLoggedIn={isLoggedIn} />
+      {init ? <AppRouter isLoggedIn={isLoggedIn} />:"로그인 실패 .."}
       <footer>&copy; {new Date().getFullYear()} clone-twitter</footer>
     </>
   );
