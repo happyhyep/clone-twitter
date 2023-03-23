@@ -1,7 +1,7 @@
 import { toBePartiallyChecked } from "@testing-library/jest-dom/dist/matchers";
 import { useState } from "react";
 import { authService } from "fbase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 function Auth () {
     const [email, setEmail] = useState("");
@@ -37,7 +37,23 @@ function Auth () {
             setError(error.message)
         }
     }
-    
+    const toggleAccount = () => setNewAccount((prev) => !prev);
+
+    const onSocialClick = async(event) => {
+        const{
+            target:{name},
+        }=event;
+
+        let provider;
+        const auth = getAuth();
+        
+        if(name === "google"){
+            provider = new GoogleAuthProvider();
+        }
+        const data = await signInWithPopup(auth, provider);
+        console.log(data);
+    };
+
     return (
         <div>
             <form onSubmit={onSubmit}>
@@ -60,8 +76,11 @@ function Auth () {
                 <input type="submit" value={newAccount ? "create Account" : "Log In"} />
                 {error ? alert(error):""}
             </form>
+            <span onClick={toggleAccount}>
+                {newAccount ? "Sign In" : "Create Account"}
+            </span>
             <div>
-                <button>Continue with Google</button>
+                <button onClick={onSocialClick} name="google">Continue with Google</button>
             </div>
         </div>
     )
