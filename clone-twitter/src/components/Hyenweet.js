@@ -1,7 +1,7 @@
 import { dbService } from "fbase";
 import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const Hyenweet = ({hyenweetObj, isOwner}) => {
     const [editing, setEditing] = useState(false);
