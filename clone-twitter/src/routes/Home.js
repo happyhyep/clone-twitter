@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
-import { dbService } from "fbase";
+import { dbService, storageService } from "fbase";
 import { addDoc, collection, getDocs, orderBy, query, onSnapshot } from "firebase/firestore";
 import Hyenweet from "components/Hyenweet";
+import { v4 as uuidv4 } from "uuid";
+import {ref, uploadString} from "@firebase/storage";
 
 function Home ({userObj}) {
     const [hyenweet, setHyenweet] = useState("");
     const [hyenweets, setHyenweets] = useState([]);
+    const [attachment, setAttachment] = useState();
 
     const getHyenweets = async () => {
         //getDocs를 통해 db에 있는 정보들을 가져옴, but getDocs는 파이어스토어의 원본을 캡처하듯 찍어 보내준 것이기 때문에
@@ -41,12 +44,15 @@ function Home ({userObj}) {
     const onSubmit = async (event) => {
         event.preventDefault();
         //hyenweet라는 컬렉션에 text, createdAt의 내용을 담은 문서를 생성
-        await addDoc(collection(dbService, "hyenweets"),{
-            text: hyenweet,
-            createdAt: Date.now(),
-            creatorId: userObj.uid,
-        });
-        setHyenweet("");
+        // await addDoc(collection(dbService, "hyenweets"),{
+        //     text: hyenweet,
+        //     createdAt: Date.now(),
+        //     creatorId: userObj.uid,
+        // });
+        // setHyenweet("");
+        const fileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`) //폴더 이름 : 사용자 아이디, 파일 이름 : uuidv4 (경로 : 폴더/파일)
+        const response = await uploadString(fileRef, attachment, "data_url");
+        console.log(response);
     };
 
     const onChange = (event) => {
@@ -57,6 +63,23 @@ function Home ({userObj}) {
         setHyenweet(value);
     };
 
+    const onFileChange =(event) => {
+        const {
+            target: {files},
+        } = event;
+        const theFile = files[0];
+        const reader = new FileReader();
+        reader.onloadend = (finishedEvent) => { //readAsDataURL 함수는 파일 선택 후 웹 브라우저가 파일을 인식하는 시점, 웹 브라우저 파일 인식이 끝난 시점을 포함하기 때문에 시점도 관리해줘야함
+            const {
+                currentTarget: { result },
+            } = finishedEvent;
+            setAttachment(result);
+        }
+        reader.readAsDataURL(theFile);
+    };
+
+    const onClearAttachment = () => setAttachment("");
+    
     return (
         <>
             <form onSubmit={onSubmit}>
@@ -67,7 +90,16 @@ function Home ({userObj}) {
                     placeholder="What's on your mind?"
                     maxLength={120}  //글자수 120 제한
                 />
+                <input type="file" accept="image/*" onChange={onFileChange}/>
                 <input type="submit" value="hyenweet" />
+                {
+                attachment &&
+                // eslint-disable-next-line jsx-a11y/alt-text
+                <div>
+                    <img src={attachment} width="100px" height="100px" />
+                    <button onClick={onClearAttachment}>Clear</button>
+                </div>
+                }
             </form>
             <div>
                 {hyenweets.map((hyenweet) => (

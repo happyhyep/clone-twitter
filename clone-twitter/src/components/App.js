@@ -23,7 +23,6 @@ function App() {
   return (
     <>
       {init ? <AppRouter isLoggedIn={isLoggedIn} userObj={userObj} />:"로그인 실패 .."}
-      <footer>&copy; {new Date().getFullYear()} hyen-witter</footer>
     </>
   );
 }
