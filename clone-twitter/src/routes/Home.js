@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { dbService, storageService } from "fbase";
-import { addDoc, collection, getDocs, orderBy, query, onSnapshot } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, onSnapshot } from "firebase/firestore";
 import Hyenweet from "components/Hyenweet";
 import { v4 as uuidv4 } from "uuid";
 import {ref, uploadString} from "@firebase/storage";
