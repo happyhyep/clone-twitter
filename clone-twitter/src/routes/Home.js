@@ -49,6 +49,7 @@ function Home ({userObj}) {
         //     createdAt: Date.now(),
         //     creatorId: userObj.uid,
         // });
+        
         // setHyenweet("");
         const fileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`) //폴더 이름 : 사용자 아이디, 파일 이름 : uuidv4 (경로 : 폴더/파일)
         const response = await uploadString(fileRef, attachment, "data_url");
