@@ -60,7 +60,7 @@ function Home ({userObj}) {
         event.preventDefault();
         const {
             target: { value },
-        } = event;
+        } = event; 
         setHyenweet(value);
     };
 
