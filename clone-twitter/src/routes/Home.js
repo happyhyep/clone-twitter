@@ -57,7 +57,7 @@ function Home ({userObj}) {
     };
 
     const onChange = (event) => {
-        event.preventDefault();
+        event.preventDefault(); 
         const {
             target: { value },
         } = event;
