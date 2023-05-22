@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { dbService, storageService } from "fbase";
-import { collection, getDocs, orderBy, query, onSnapshot } from "firebase/firestore";
+import { collection,addDoc, getDocs, orderBy, query, onSnapshot } from "firebase/firestore";
 import Hyenweet from "components/Hyenweet";
 import { v4 as uuidv4 } from "uuid";
-import {ref, uploadString} from "@firebase/storage";
+import {ref, uploadString, getDownloadURL} from "@firebase/storage";
 
 function Home ({userObj}) {
     const [hyenweet, setHyenweet] = useState("");
@@ -51,9 +51,25 @@ function Home ({userObj}) {
         // });
         
         // setHyenweet("");
-        const fileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`) //폴더 이름 : 사용자 아이디, 파일 이름 : uuidv4 (경로 : 폴더/파일)
-        const response = await uploadString(fileRef, attachment, "data_url");
-        console.log(response);
+
+        let attachmentURL ="";
+
+        if(attachment !== "")  {
+            const fileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`) //폴더 이름 : 사용자 아이디, 파일 이름 : uuidv4 (경로 : 폴더/파일)
+            const response = await uploadString(fileRef, attachment, "data_url");
+            attachmentURL = await getDownloadURL(fileRef);
+            console.log(attachmentURL)
+        }
+        const tweetObject = {
+            text: hyenweet,
+            createdAt: Date.now(),
+            creatorId: userObj.uid,
+            attachmentURL,
+        };
+        await addDoc(collection(dbService, "hyenweets"), tweetObject);
+        setHyenweet("");
+        setAttachment("");
+    
     };
 
     const onChange = (event) => {
@@ -104,7 +120,7 @@ function Home ({userObj}) {
             </form>
             <div>
                 {hyenweets.map((hyenweet) => (
-                    <Hyenweet key={hyenweet.id} hyenweetObj={hyenweet} isOwner={hyenweet.creatorId === userObj.uid} />
+                    <Hyenweet key={hyenweet.id} userObj={hyenweet} isOwner={hyenweet.creatorId === userObj.uid} />
                 ))}
             </div>
         </>

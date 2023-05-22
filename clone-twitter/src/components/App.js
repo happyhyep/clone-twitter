@@ -7,11 +7,15 @@ function App() {
   const [init, setInit] = useState(false);
   const [userObj, setUserObj] = useState(null);
 
+  const refreshUser = () => {
+    const user = authService.currentUser;
+    setUserObj({...user});
+  }
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
       if(user) {
         setIsLoggedIn(true);
-        setUserObj(user);
+        setUserObj({...user});
       }
       else {
         setIsLoggedIn(false);
@@ -20,9 +24,15 @@ function App() {
     });
   }, []);
 
+
   return (
     <>
-      {init ? <AppRouter isLoggedIn={isLoggedIn} userObj={userObj} />:"로그인 실패 .."}
+      {init ? <AppRouter
+                isLoggedIn={isLoggedIn}
+                userObj={userObj}
+                refreshUser={refreshUser}  
+              /> : "로그인중..."}
+      <footer>&copy; {new Date().getFullYear()} happyhyep</footer>
     </>
   );
 }

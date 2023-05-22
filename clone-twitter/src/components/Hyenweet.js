@@ -1,17 +1,21 @@
-import { dbService } from "fbase";
+import { dbService, storageService } from "fbase";
 import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 import React from "react";
 import { useState } from "react";
+import {ref, deleteObject} from "@firebase/storage";
 
-const Hyenweet = ({hyenweetObj, isOwner}) => {
+const Hyenweet = ({userObj, isOwner}) => {
     const [editing, setEditing] = useState(false);
-    const [newTweet, setNewTweet] = useState(hyenweetObj.text);
+    const [newTweet, setNewTweet] = useState(userObj.text);
 
     const onDeleteClick = async () => {
         const ok = window.confirm("이 트윗을 삭제하시겠습니까?");
         if(ok) {
-            const tweetTextRef = doc(dbService, "hyenweets", `${hyenweetObj.id}`);
+            const tweetTextRef = doc(dbService, "hyenweets", `${userObj.id}`);
             await deleteDoc(tweetTextRef);
+
+            const urlRef = ref(storageService, userObj.attachmentURL);
+            await deleteObject(urlRef);
         }
     };
 
@@ -19,7 +23,7 @@ const Hyenweet = ({hyenweetObj, isOwner}) => {
 
     const onSubmit = async (event) => {
         event.preventDefault();
-        const tweetTextRef =doc(dbService, "hyenweets", `${hyenweetObj.id}`);
+        const tweetTextRef =doc(dbService, "hyenweets", `${userObj.id}`);
         await updateDoc(tweetTextRef, {
             text: newTweet,
         });
@@ -55,7 +59,10 @@ const Hyenweet = ({hyenweetObj, isOwner}) => {
 
                 ) : (
                     <>
-                        <h4>{hyenweetObj.text}</h4>
+                        <h4>{userObj.text}</h4>
+                        {userObj.attachmentURL && (
+                            <img src={userObj.attachmentURL} width="300px" height="300px" />
+                        )}
                         {isOwner && (
                             <>
                                 <button onClick={onDeleteClick}>삭제</button>
