@@ -37,42 +37,56 @@ const Hyenweet = ({userObj, isOwner}) => {
         setNewTweet(value);
     }
 
-    return(
-        <div>
-            {
-                editing ? (
-                    <>
-                        <form onSubmit={onSubmit}>
-                            <input
-                                type="text"
-                                placeholder="수정할 글을 작성하세요."
-                                value={newTweet} required
-                                onChange={onChange}
-                            />
-                            <input
-                                type="submit"
-                                value="Update Tweet"
-                            />
-                        </form>
-                        <button onClick={toggleEditing}>Cancel</button>
-                    </>
+    const imageClick = () => {
+        return(
+            editing ? (
+                <>
+                    <form onSubmit={onSubmit}>
+                        <input
+                            type="text"
+                            placeholder="수정할 글을 작성하세요."
+                            value={newTweet} required
+                            onChange={onChange}
+                        />
+                        <input
+                            type="submit"
+                            value="Update Tweet"
+                        />
+                    </form>
+                    <button onClick={toggleEditing}>Cancel</button>
+                </>
 
-                ) : (
+            ) : (
+            <div>
+                {isOwner && (
                     <>
-                        <h4>{userObj.text}</h4>
-                        {userObj.attachmentURL && (
-                            <img src={userObj.attachmentURL} width="300px" height="300px" />
-                        )}
-                        {isOwner && (
-                            <>
-                                <button onClick={onDeleteClick}>삭제</button>
-                                <button onClick={toggleEditing}>수정</button>
-                            </>
-                        )}
+                        <button onClick={onDeleteClick}>삭제</button>
+                        <button onClick={toggleEditing}>수정</button>
                     </>
-                )
-            }
-        </div>
+                )}
+            </div>
+            )
+        )
+    }
+
+    return(
+                    <>
+                    {userObj.attachmentURL && (
+                    <img 
+                    alt="pic"
+                    style={{
+                        width: '335px',
+                        height: '335px',
+                        margin: 'auto',
+                        marginLeft: '20px',
+                        marginRight: '20px',
+                        marginBottom: '20px',
+                        boxShadow: '0 5px 10px rgba(0, 0, 0, 0.8)',
+                        cursor: 'pointer'
+                    }}
+                         src={userObj.attachmentURL} width="300px" height="300px" onClick={imageClick}></img>
+                    )}
+                </>
     )
 }
 

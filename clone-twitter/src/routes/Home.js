@@ -4,6 +4,7 @@ import { collection,addDoc, getDocs, orderBy, query, onSnapshot } from "firebase
 import Hyenweet from "components/Hyenweet";
 import { v4 as uuidv4 } from "uuid";
 import {ref, uploadString, getDownloadURL} from "@firebase/storage";
+import HyenweetPhoto from "components/HyenweetPhoto";
 
 function Home ({userObj}) {
     const [hyenweet, setHyenweet] = useState("");
@@ -118,7 +119,10 @@ function Home ({userObj}) {
                 </div>
                 }
             </form>
-            <div>
+            <div style={{
+            width: '1500px',
+            margin: '0 auto',
+            marginTop: '100px',}}>
                 {hyenweets.map((hyenweet) => (
                     <Hyenweet key={hyenweet.id} userObj={hyenweet} isOwner={hyenweet.creatorId === userObj.uid} />
                 ))}

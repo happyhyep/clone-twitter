@@ -3,6 +3,7 @@ import Auth from "routes/Auth";
 import Home from "routes/Home";
 import Navigation from "./Navigation";
 import Profile from "routes/Profile";
+import Hyenweet from "./Hyenweet";
 
 function AppRouter({isLoggedIn, userObj, refreshUser}) {
     return (

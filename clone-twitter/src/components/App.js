@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AppRouter from "components/Router";
 import { authService } from "fbase";
+import { styled } from "styled-components";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -32,9 +33,14 @@ function App() {
                 userObj={userObj}
                 refreshUser={refreshUser}  
               /> : "로그인중..."}
-      <footer>&copy; {new Date().getFullYear()} happyhyep</footer>
+      <Footer>&copy; {new Date().getFullYear()} happyhyep</Footer>
     </>
   );
 }
 
 export default App;
+
+const Footer = styled.div`
+  position: fixed;
+  bottom: 0;
+`
