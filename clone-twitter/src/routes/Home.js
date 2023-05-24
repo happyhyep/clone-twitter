@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { dbService, storageService } from "fbase";
 import { collection,addDoc, getDocs, orderBy, query, onSnapshot } from "firebase/firestore";
 import Hyenweet from "components/Hyenweet";
 import { v4 as uuidv4 } from "uuid";
 import {ref, uploadString, getDownloadURL} from "@firebase/storage";
 import HyenweetPhoto from "components/HyenweetPhoto";
+import { styled } from "styled-components";
 
 function Home ({userObj}) {
     const [hyenweet, setHyenweet] = useState("");
@@ -98,26 +99,37 @@ function Home ({userObj}) {
 
     const onClearAttachment = () => setAttachment("");
     
+    const imageInput = useRef();
+  
+    const onClickImageUpload = () => {
+      imageInput.current.click();
+    };
+
     return (
         <>
             <form onSubmit={onSubmit}>
-                <input
-                    value={hyenweet}
-                    onChange={onChange}
-                    type="text"
-                    placeholder="What's on your mind?"
-                    maxLength={120}  //글자수 120 제한
-                />
-                <input type="file" accept="image/*" onChange={onFileChange}/>
-                <input type="submit" value="hyenweet" />
-                {
-                attachment &&
-                // eslint-disable-next-line jsx-a11y/alt-text
-                <div>
-                    <img src={attachment} width="100px" height="100px" />
-                    <button onClick={onClearAttachment}>Clear</button>
+                <div style={{display: 'flex', justifyContent: 'center', marginBottom: '12px'}}>
+                        <TextInput
+                            value={hyenweet}
+                            onChange={onChange}
+                            type="text"
+                            placeholder="글을 작성해주세요."
+                            maxLength={120}  //글자수 120 제한
+                        />
                 </div>
+                <input type="file" accept="image/*" onChange={onFileChange} style={{display: 'none'}} ref={imageInput}/>
+                     
+                {
+                attachment ?
+                // eslint-disable-next-line jsx-a11y/alt-text
+                <div style={{display: 'flex', justifyContent: 'center', marginBottom: '15px'}}>
+                    <img src={attachment} width="300px" height="300px" />
+                    <Button onClick={onClearAttachment}>CLEAR</Button>
+                </div>
+                : <div style={{display: 'flex', justifyContent: 'center',  marginBottom: '15px'}}><ImageInputButton onClick={onClickImageUpload}>Upload Image</ImageInputButton></div>
                 }
+                
+                <div style={{display: 'flex', justifyContent: 'center',  marginBottom: '15px'}}><SubmitInput type="submit" value="UPLOAD" style={{justifyContent: 'center'}} /></div>
             </form>
             <div style={{
             width: '1500px',
@@ -135,3 +147,71 @@ function Home ({userObj}) {
 export default Home;
 
 //두번씩 출력되는데, firebase의 dev 환경이라 그렇고, production에서는 잘 작동한다.
+
+const TextInput = styled.input`
+    width: 300px;
+    height: 30px;
+
+    color: #77af9c;
+    border: solid 1.4px #77af9c;
+    border-radius: 10px;
+    line-height: 30px;
+    text-align: center;
+`
+const ImageInputButton = styled.button`
+    width: 300px;
+    height: 300px;
+    color: #77af9c;
+
+    text-decoration: none;
+    font-weight: 600;
+    text-align: center;
+    line-height: 300px;
+    transition: 0.25s;
+    border-radius: 5px;
+    border: none;
+
+    &:hover{
+        cursor: pointer;
+        transform: scale(1.1);}
+`
+const SubmitInput = styled.input`
+    width: 80px;
+    height: 30px;
+    background-color: #77af9c;
+    color: #d7fff1;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    font-weight: 600;
+    text-align: center;
+    line-height: 30px;
+    transition: 0.25s;
+    border-radius: 15px;
+    border: none;
+
+    &:hover{
+        cursor: pointer;
+        letter-spacing: 2px;
+        transform: scale(1.2);}
+`
+
+const Button = styled.button`
+    width: 80px;
+    height: 30px;
+    background-color: #77af9c;
+    color: #d7fff1;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    font-weight: 600;
+    text-align: center;
+    line-height: 30px;
+    transition: 0.25s;
+    border-radius: 15px;
+    border: none;
+
+    &:hover{
+        cursor: pointer;
+        letter-spacing: 2px;
+        transform: scale(1.2);}
+`
+
