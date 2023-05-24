@@ -7,9 +7,9 @@
 # 💨 About the project
 
 ### 기본적인 회원가입, 로그인 기능 + 사진/글 포스팅 기능이 들어간 toy project입니다.
-
-
 ### backend는 firebase로 제작되어 있습니다.
+#### (twitter 클론 프로젝트를 응용하였습니다.)
+
 <br>
 
 # 💨 Main Feature
